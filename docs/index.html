@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build & Chill Auto Poster</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f0f; color: #d0d0d0; min-height: 100vh; display: flex; flex-direction: column; }
+
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; border-bottom: 1px solid #1e1e1e; }
+  .nav-logo { font-size: 1.1rem; font-weight: 600; color: #fff; text-decoration: none; }
+  .nav-cta { background: #7c3aed; color: #fff; padding: 10px 22px; border-radius: 8px; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: background 0.2s; }
+  .nav-cta:hover { background: #6d28d9; }
+
+  .hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 24px 60px; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); color: #fff; font-weight: 700; line-height: 1.2; margin-bottom: 20px; }
+  .hero h1 span { color: #a78bfa; }
+  .hero p { font-size: 1.1rem; color: #888; max-width: 560px; margin-bottom: 40px; line-height: 1.7; }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+  .btn-primary { background: #7c3aed; color: #fff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-size: 1rem; font-weight: 600; transition: background 0.2s; }
+  .btn-primary:hover { background: #6d28d9; }
+  .btn-secondary { border: 1px solid #2a2a2a; color: #aaa; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-size: 1rem; transition: border-color 0.2s, color 0.2s; }
+  .btn-secondary:hover { border-color: #555; color: #fff; }
+
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; max-width: 1000px; margin: 0 auto; padding: 60px 24px; width: 100%; }
+  .feature { background: #151515; border: 1px solid #1e1e1e; border-radius: 12px; padding: 28px; }
+  .feature-icon { font-size: 1.8rem; margin-bottom: 14px; }
+  .feature h3 { color: #fff; font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+  .feature p { font-size: 0.88rem; color: #777; line-height: 1.6; }
+
+  .platforms { text-align: center; padding: 20px 24px 60px; }
+  .platforms p { font-size: 0.85rem; color: #444; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .platform-list { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+  .platform-list span { font-size: 0.9rem; color: #666; background: #151515; border: 1px solid #1e1e1e; padding: 8px 18px; border-radius: 20px; }
+
+  footer { border-top: 1px solid #1a1a1a; padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  footer p { font-size: 0.82rem; color: #444; }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a { font-size: 0.82rem; color: #555; text-decoration: none; }
+  .footer-links a:hover { color: #a78bfa; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">Build & Chill Auto Poster</a>
+  <a href="https://sirupy-evolutionally-oneida.ngrok-free.dev/dashboard" class="nav-cta">Open App →</a>
+</nav>
+
+<section class="hero">
+  <h1>Schedule &amp; post content to<br><span>every platform at once</span></h1>
+  <p>Build & Chill Auto Poster lets you queue videos and images, then automatically publishes them to TikTok, YouTube, Instagram, and Facebook on your schedule.</p>
+  <div class="hero-actions">
+    <a href="https://sirupy-evolutionally-oneida.ngrok-free.dev/dashboard" class="btn-primary">Open App</a>
+    <a href="https://sirupy-evolutionally-oneida.ngrok-free.dev/dashboard" class="btn-secondary">Sign In</a>
+  </div>
+</section>
+
+<div class="features">
+  <div class="feature">
+    <div class="feature-icon">📅</div>
+    <h3>Smart Scheduling</h3>
+    <p>Queue posts in advance and let Build & Chill Auto Poster publish at the exact time you choose.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">🎬</div>
+    <h3>Video &amp; Photo</h3>
+    <p>Upload MP4 videos or image carousels. Supports all major formats for every platform.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">🔗</div>
+    <h3>Multi-Platform</h3>
+    <p>Connect TikTok, YouTube, Instagram, and Facebook in one place. Post everywhere simultaneously.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">🔒</div>
+    <h3>Local &amp; Private</h3>
+    <p>All data stays on your device. No cloud storage, no data collection, no third-party servers.</p>
+  </div>
+</div>
+
+<div class="platforms">
+  <p>Works with</p>
+  <div class="platform-list">
+    <span>TikTok</span>
+    <span>YouTube</span>
+    <span>Instagram</span>
+    <span>Facebook</span>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 Build & Chill Auto Poster</p>
+  <div class="footer-links">
+    <a href="legal/privacy-policy/">Privacy Policy</a>
+    <a href="legal/terms-of-service/">Terms of Service</a>
+  </div>
+</footer>
+
+</body>
+</html>
