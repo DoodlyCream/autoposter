@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feed Preview — Build & Chill</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #f0f2f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 24px 16px 48px; }
+.wrapper { max-width: 960px; margin: 0 auto; }
+.header { text-align: center; margin-bottom: 28px; }
+.header-logo { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: #666; font-weight: 600; margin-bottom: 4px; }
+.header-title { font-size: 1.1rem; font-weight: 700; color: #1a1a2e; }
+
+/* ── Instagram Grid ── */
+.ig-grid-wrap { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 16px; }
+.ig-grid-label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #999; margin-bottom: 12px; font-weight: 600; }
+/* Instagram grid: 4:5 portrait (changed from 1:1 square in 2024)
+   Mobile (iPhone 14 390px): 128×160px cells · Desktop (935px): 309×387px cells */
+.ig-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; width: 100%; }
+.ig-grid-mobile { max-width: 390px; }
+.ig-grid-desktop { max-width: 935px; }
+/* padding-bottom 125% = 4:5 portrait aspect ratio */
+.ig-grid-cell { position: relative; width: 100%; padding-bottom: 125%; height: 0; overflow: hidden; background: #eee; }
+.ig-grid-cell img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.ig-grid-cell.empty { background: #e8e8e8; }
+
+/* ── Instagram Feed Post ── */
+.ig-post {
+  width: 100%; max-width: 470px; margin: 0 auto 16px;
+  background: #fff; border: 1px solid #dbdbdb; border-radius: 3px;
+}
+.ig-post-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid #efefef; }
+.ig-avatar {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af);
+}
+.ig-username { font-size: 0.82rem; font-weight: 600; color: #000; }
+.ig-time { font-size: 0.7rem; color: #8e8e8e; }
+.ig-more { margin-left: auto; color: #8e8e8e; font-size: 1.1rem; cursor: pointer; }
+.ig-image-wrap { width: 100%; overflow: hidden; background: #fafafa; }
+.ig-image-wrap img { width: 100%; display: block; object-fit: cover; }
+.ig-actions { display: flex; gap: 14px; padding: 10px 14px 6px; align-items: center; }
+.ig-action { font-size: 1.3rem; cursor: pointer; color: #262626; }
+.ig-bookmark { margin-left: auto; }
+.ig-likes { padding: 0 14px 4px; font-size: 0.82rem; font-weight: 600; color: #000; }
+.ig-caption { padding: 2px 14px 14px; font-size: 0.82rem; color: #000; line-height: 1.45; }
+.ig-caption strong { font-weight: 700; margin-right: 4px; }
+
+/* ── Facebook Feed Post ── */
+.fb-post {
+  width: 100%; max-width: 500px; margin: 0 auto 16px;
+  background: #fff; border: 1px solid #ddd; border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.fb-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; }
+.fb-avatar { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, #4a80d9, #6ca0e8); }
+.fb-name { font-size: 0.88rem; font-weight: 700; color: #050505; }
+.fb-time { font-size: 0.72rem; color: #65676b; }
+.fb-more { margin-left: auto; color: #65676b; font-size: 1.2rem; cursor: pointer; }
+.fb-caption-text { padding: 0 16px 12px; font-size: 0.9rem; color: #050505; line-height: 1.45; white-space: pre-wrap; }
+.fb-image-wrap { width: 100%; overflow: hidden; background: #f0f2f5; }
+.fb-image-wrap img { width: 100%; display: block; object-fit: cover; }
+.fb-stats { display: flex; padding: 8px 16px; font-size: 0.78rem; color: #65676b; border-bottom: 1px solid #e4e6ea; }
+.fb-actions { display: flex; justify-content: space-around; padding: 4px 0; }
+.fb-action { flex: 1; text-align: center; padding: 8px; font-size: 0.85rem; font-weight: 600; color: #65676b; cursor: pointer; border-radius: 4px; }
+.fb-action:hover { background: #f2f2f2; }
+
+.footer { text-align: center; margin-top: 32px; font-size: 0.7rem; color: #bbb; letter-spacing: 0.05em; }
+.footer a { color: #bbb; text-decoration: none; }
+.device-toggle { display: flex; gap: 6px; margin-bottom: 10px; }
+.device-btn { font-size: 0.7rem; padding: 4px 12px; border-radius: 5px; border: 1px solid #ddd; background: #fff; cursor: pointer; color: #888; }
+.device-btn.active { border-color: #c13584; color: #c13584; background: #fff0f6; }
+.dim-label { font-size: 0.65rem; color: #aaa; margin-bottom: 10px; font-family: monospace; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="header">
+    <div class="header-logo">Build &amp; Chill</div>
+    <div class="header-title">Feed Preview</div>
+  </div>
+
+  {% if mode == 'grid' %}
+  <div class="ig-grid-wrap">
+    <div class="ig-grid-label">Instagram Profile Grid · 4:5 portrait</div>
+    <div class="device-toggle">
+      <button class="device-btn active" onclick="setDevice('mobile',this)">📱 Mobile</button>
+      <button class="device-btn" onclick="setDevice('desktop',this)">🖥 Desktop</button>
+    </div>
+    <div class="dim-label" id="dimLabel">{% if device == 'desktop' %}Desktop · 309×387px cells · 4:5 · 3px gap{% else %}Mobile · 128×160px cells · 4:5 · 3px gap{% endif %}</div>
+    <div class="ig-grid ig-grid-{{ device }}" id="igGrid">
+      {% for url in image_urls %}
+      <div class="ig-grid-cell"><img src="{{ url }}" alt="post {{ loop.index }}" loading="lazy"></div>
+      {% endfor %}
+      {% set remaining = 9 - image_urls|length %}
+      {% if remaining > 0 %}
+        {% for i in range(remaining) %}
+        <div class="ig-grid-cell empty"></div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+  <script>
+  function setDevice(d, btn) {
+    document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const g = document.getElementById('igGrid');
+    g.className = 'ig-grid ig-grid-' + d;
+    const lbl = document.getElementById('dimLabel');
+    lbl.textContent = d === 'mobile'
+      ? 'Mobile · 128×160px cells · 4:5 · 3px gap'
+      : 'Desktop · 309×387px cells · 4:5 · 3px gap';
+  }
+  </script>
+
+  {% elif mode == 'ig-feed' %}
+  <div class="ig-post">
+    <div class="ig-post-header">
+      <div class="ig-avatar"></div>
+      <div>
+        <div class="ig-username">your_handle</div>
+        <div class="ig-time">Just now</div>
+      </div>
+      <div class="ig-more">···</div>
+    </div>
+    {% if image_urls %}
+    <div class="ig-image-wrap">
+      <img src="{{ image_urls[0] }}" alt="post image">
+    </div>
+    {% endif %}
+    <div class="ig-actions">
+      <span class="ig-action">♡</span>
+      <span class="ig-action">💬</span>
+      <span class="ig-action">↗</span>
+      <span class="ig-action ig-bookmark">🔖</span>
+    </div>
+    <div class="ig-likes">1,234 likes</div>
+    {% if caption %}
+    <div class="ig-caption"><strong>your_handle</strong> {{ caption }}</div>
+    {% endif %}
+  </div>
+
+  {% elif mode == 'fb-feed' %}
+  <div class="fb-post">
+    <div class="fb-header">
+      <div class="fb-avatar"></div>
+      <div>
+        <div class="fb-name">Your Page</div>
+        <div class="fb-time">Just now · 🌐</div>
+      </div>
+      <div class="fb-more">···</div>
+    </div>
+    {% if caption %}
+    <div class="fb-caption-text">{{ caption }}</div>
+    {% endif %}
+    {% if image_urls %}
+    <div class="fb-image-wrap">
+      <img src="{{ image_urls[0] }}" alt="post image">
+    </div>
+    {% endif %}
+    <div class="fb-stats">
+      <span>👍 123</span>
+      <span style="margin-left:auto">45 comments · 12 shares</span>
+    </div>
+    <div class="fb-actions">
+      <span class="fb-action">👍 Like</span>
+      <span class="fb-action">💬 Comment</span>
+      <span class="fb-action">↗ Share</span>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="footer">Powered by <a href="#">Build &amp; Chill Auto Poster</a></div>
+</div>
+</body>
+</html>

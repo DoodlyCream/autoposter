@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Build & Chill Auto Poster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080b10; --surface: #0d1117; --surface2: #161b22; --border: #21262d;
+  --accent: #00ff88; --accent2: #00ccff; --danger: #ff4444; --warning: #ffaa00;
+  --text: #e6edf3; --muted: #8b949e;
+  --mono: 'Space Mono', monospace; --sans: 'DM Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.015) 2px, rgba(0,255,136,0.015) 4px);
+  pointer-events: none; z-index: 999;
+}
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(8,11,16,0.95); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border); padding: 0 32px;
+  height: 60px; display: flex; align-items: center; justify-content: space-between;
+}
+.logo { font-family: var(--mono); font-size: 0.9rem; font-weight: 700; letter-spacing: 0.05em; }
+.logo span { color: var(--accent); }
+.logo em { font-style: normal; font-size: 0.65rem; background: var(--surface2); border: 1px solid var(--border); padding: 2px 8px; border-radius: 4px; margin-left: 10px; color: var(--muted); vertical-align: middle; }
+.nav-links { display: flex; gap: 4px; }
+.nav-links a { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); text-decoration: none; padding: 6px 14px; border-radius: 6px; transition: all 0.15s; letter-spacing: 0.05em; }
+.nav-links a:hover, .nav-links a.active { color: var(--accent); background: rgba(0,255,136,0.07); }
+.container { max-width: 900px; margin: 0 auto; padding: 40px 24px; }
+h1 { font-family: var(--mono); font-size: 1rem; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; margin-bottom: 32px; }
+
+.platform-section { margin-bottom: 24px; }
+.platform-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+}
+.platform-header {
+  padding: 18px 22px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.platform-title { display: flex; align-items: center; gap: 12px; }
+.platform-title h2 { font-family: var(--mono); font-size: 0.85rem; letter-spacing: 0.05em; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; }
+.connected .status-dot { background: #4ade80; box-shadow: 0 0 8px #4ade80; }
+.disconnected .status-dot { background: var(--muted); }
+.status-label { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
+.connected-label { color: #4ade80; }
+
+.platform-body { padding: 22px; }
+.guide {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 16px; margin-bottom: 20px;
+  font-size: 0.8rem; color: var(--muted); line-height: 1.6;
+}
+.guide strong { color: var(--accent2); }
+.guide a { color: var(--accent); }
+.guide ol { padding-left: 18px; margin-top: 6px; }
+.guide ol li { margin-bottom: 4px; }
+
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 0.75rem; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.04em; }
+.field input {
+  width: 100%; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px; color: var(--text);
+  font-size: 0.875rem; font-family: var(--mono); outline: none; transition: border-color 0.15s;
+}
+.field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,255,136,0.08); }
+.field input[type="password"] { letter-spacing: 0.1em; }
+
+.btn-row { display: flex; gap: 10px; margin-top: 20px; }
+.btn {
+  font-family: var(--mono); font-size: 0.75rem; padding: 10px 18px;
+  border-radius: 8px; border: none; cursor: pointer;
+  letter-spacing: 0.05em; font-weight: 700; transition: all 0.15s;
+}
+.btn-primary { background: var(--accent); color: var(--bg); }
+.btn-primary:hover { background: #00e077; transform: translateY(-1px); }
+.btn-auth { background: transparent; border: 1px solid var(--accent2); color: var(--accent2); }
+.btn-auth:hover { background: rgba(0,204,255,0.08); }
+.btn-disconnect { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+.btn-disconnect:hover { border-color: var(--danger); color: var(--danger); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><span>BUILD & CHILL</span> AUTO POSTER <em>LOCAL</em></div>
+  <div class="nav-links">
+    <a href="/">Dashboard</a>
+    <a href="/settings" class="active">Settings</a>
+  </div>
+</nav>
+
+<div class="container">
+  <h1>Platform Connections</h1>
+
+  <!-- ── YOUTUBE ── -->
+  <div class="platform-section">
+    <div class="platform-card">
+      <div class="platform-header">
+        <div class="platform-title">
+          <div class="status-dot" style="background: {% if youtube_accounts|selectattr('connected')|list|length > 0 %}#4ade80; box-shadow: 0 0 8px #4ade80{% else %}var(--muted){% endif %};"></div>
+          <h2>▶ YouTube</h2>
+        </div>
+        <span class="status-label" style="color: {% if youtube_accounts|selectattr('connected')|list|length > 0 %}#4ade80{% else %}var(--muted){% endif %}">
+          {% set yt_connected_count = youtube_accounts|selectattr('connected')|list|length %}
+          {% if yt_connected_count > 0 %}{{ yt_connected_count }} Account{{ 's' if yt_connected_count != 1 else '' }} Connected{% else %}Not Connected{% endif %}
+        </span>
+      </div>
+      <div class="platform-body">
+        <div class="guide">
+          <strong>Setup Guide:</strong>
+          <ol>
+            <li>Go to <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> → Create a project</li>
+            <li>Enable <strong>YouTube Data API v3</strong></li>
+            <li>Credentials → Create OAuth 2.0 Client ID → Web Application</li>
+            <li>Add <code>http://localhost:8888/auth/youtube/callback</code> as redirect URI</li>
+            <li>Enter your Client ID + Secret below with a nickname, then click Add & Connect</li>
+          </ol>
+        </div>
+
+        <!-- Connected Accounts List -->
+        {% if youtube_accounts %}
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+          {% for account in youtube_accounts %}
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:{% if account.connected %}#4ade80;box-shadow:0 0 6px #4ade80{% else %}var(--muted){% endif %};"></div>
+              <div>
+                <div style="font-weight:600;font-size:0.875rem;">{{ account.nickname }}</div>
+                <div style="font-size:0.7rem;color:var(--muted);font-family:var(--mono);">YouTube · {% if account.connected %}Connected{% else %}Not authenticated{% endif %}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <a href="/auth/youtube/start?account_id={{ account.id }}" class="btn btn-auth" style="font-size:0.7rem;padding:7px 12px;">{% if account.connected %}Re-Auth{% else %}Connect →{% endif %}</a>
+              <form action="/settings/accounts/{{ account.id }}/delete" method="post" style="display:inline" onsubmit="return confirm('Remove {{ account.nickname }}?')">
+                <button type="submit" class="btn btn-disconnect" style="font-size:0.7rem;padding:7px 12px;">Remove</button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div style="color:var(--muted);font-size:0.8rem;margin-bottom:16px;">No YouTube accounts added yet.</div>
+        {% endif %}
+
+        <!-- Add Account -->
+        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:8px;">
+          <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.08em;margin-bottom:12px;">ADD YOUTUBE ACCOUNT</div>
+          <form action="/settings/accounts/youtube/add" method="post">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div class="field" style="grid-column:1/-1;">
+                <label>Nickname (e.g. "Chef Channel")</label>
+                <input type="text" name="nickname" placeholder="Chef Channel" required>
+              </div>
+              <div class="field">
+                <label>Client ID</label>
+                <input type="text" name="client_id" placeholder="xxx.apps.googleusercontent.com" required>
+              </div>
+              <div class="field">
+                <label>Client Secret</label>
+                <input type="password" name="client_secret" placeholder="GOCSPX-..." required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top:4px;">+ Add & Connect</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TIKTOK ── -->
+  <div class="platform-section">
+    <div class="platform-card">
+      <div class="platform-header">
+        <div class="platform-title">
+          <div class="status-dot" style="background: {% if tiktok_accounts|selectattr('connected')|list|length > 0 %}#4ade80; box-shadow: 0 0 8px #4ade80{% else %}var(--muted){% endif %};"></div>
+          <h2>♪ TikTok</h2>
+        </div>
+        <span class="status-label" style="color: {% if tiktok_accounts|selectattr('connected')|list|length > 0 %}#4ade80{% else %}var(--muted){% endif %}">
+          {% set connected_count = tiktok_accounts|selectattr('connected')|list|length %}
+          {% if connected_count > 0 %}{{ connected_count }} Account{{ 's' if connected_count != 1 else '' }} Connected{% else %}Not Connected{% endif %}
+        </span>
+      </div>
+      <div class="platform-body">
+
+        <!-- App Credentials -->
+        <div class="guide">
+          <strong>Step 1 — TikTok App Credentials (shared across all accounts)</strong>
+          <ol>
+            <li>Go to <a href="https://developers.tiktok.com" target="_blank">developers.tiktok.com</a> → Create an app</li>
+            <li>Add <strong>Login Kit</strong> + <strong>Content Posting API</strong></li>
+            <li>TikTok blocks localhost — run <code>ngrok http 8888</code> for a public URL</li>
+            <li>In TikTok app → set Redirect URI to: <code>https://YOUR-NGROK-URL/auth/tiktok/callback</code></li>
+          </ol>
+        </div>
+        <form action="/settings/save/tiktok_app" method="post">
+          <div class="field">
+            <label>Client Key</label>
+            <input type="text" name="client_key" placeholder="aw...">
+          </div>
+          <div class="field">
+            <label>Client Secret</label>
+            <input type="password" name="client_secret" placeholder="Your TikTok client secret">
+          </div>
+          <div class="field">
+            <label>ngrok URL (required — TikTok blocks localhost)</label>
+            <input type="text" name="ngrok_url" placeholder="https://abc123.ngrok-free.app">
+          </div>
+          <div class="btn-row">
+            <button type="submit" class="btn btn-primary">Save App Credentials</button>
+          </div>
+        </form>
+
+        <!-- Connected Accounts -->
+        <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border);">
+          <div style="font-family: var(--mono); font-size: 0.75rem; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 14px;">STEP 2 — CONNECTED ACCOUNTS</div>
+
+          {% if tiktok_accounts %}
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
+            {% for account in tiktok_accounts %}
+            <div style="background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 8px; height: 8px; border-radius: 50%; background: {% if account.connected %}#4ade80; box-shadow: 0 0 6px #4ade80{% else %}var(--muted){% endif %};"></div>
+                <div>
+                  <div style="font-weight: 600; font-size: 0.875rem;">{{ account.nickname }}</div>
+                  <div style="font-size: 0.7rem; color: var(--muted); font-family: var(--mono);">ID: {{ account.id }} · {% if account.connected %}Connected{% else %}Not connected — click to authenticate{% endif %}</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <a href="/auth/tiktok/start?account_id={{ account.id }}" class="btn btn-auth" style="font-size: 0.7rem; padding: 7px 12px;">
+                  {% if account.connected %}Re-Auth{% else %}Connect →{% endif %}
+                </a>
+                <form action="/settings/accounts/{{ account.id }}/delete" method="post" style="display:inline" onsubmit="return confirm('Remove {{ account.nickname }}?')">
+                  <button type="submit" class="btn btn-disconnect" style="font-size: 0.7rem; padding: 7px 12px;">Remove</button>
+                </form>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div style="color: var(--muted); font-size: 0.8rem; margin-bottom: 16px;">No TikTok accounts added yet.</div>
+          {% endif %}
+
+          <!-- Add Account Form -->
+          <form action="/settings/accounts/tiktok/add" method="post" style="display: flex; gap: 10px; align-items: flex-end;">
+            <div class="field" style="margin: 0; flex: 1;">
+              <label>Account Nickname (e.g. "Chef Account" or "Business")</label>
+              <input type="text" name="nickname" placeholder="Chef Account" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="white-space: nowrap;">+ Add Account</button>
+          </form>
+          <div style="font-size: 0.72rem; color: var(--muted); margin-top: 8px;">Save your app credentials first, then add accounts. Each account will go through TikTok's OAuth login.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── INSTAGRAM ── -->
+  <div class="platform-section">
+    <div class="platform-card">
+      <div class="platform-header">
+        <div class="platform-title">
+          <div class="status-dot" style="background: {% if instagram_accounts|selectattr('connected')|list|length > 0 %}#4ade80; box-shadow: 0 0 8px #4ade80{% else %}var(--muted){% endif %};"></div>
+          <h2>◈ Instagram</h2>
+        </div>
+        <span class="status-label" style="color: {% if instagram_accounts|selectattr('connected')|list|length > 0 %}#4ade80{% else %}var(--muted){% endif %}">
+          {% set ig_connected_count = instagram_accounts|selectattr('connected')|list|length %}
+          {% if ig_connected_count > 0 %}{{ ig_connected_count }} Account{{ 's' if ig_connected_count != 1 else '' }} Connected{% else %}Not Connected{% endif %}
+        </span>
+      </div>
+      <div class="platform-body">
+        <div class="guide">
+          <strong>Setup Guide (Meta Graph API):</strong>
+          <ol>
+            <li>Go to <a href="https://developers.facebook.com" target="_blank">developers.facebook.com</a> → Create App → Business type</li>
+            <li>Add <strong>Instagram Graph API</strong> product</li>
+            <li>Connect your Instagram Professional account to a Facebook Page</li>
+            <li>Generate a <strong>long-lived Page Access Token</strong> via Graph API Explorer</li>
+            <li>Find your Instagram Business Account ID via the API</li>
+          </ol>
+        </div>
+
+        {% if instagram_accounts %}
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+          {% for account in instagram_accounts %}
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:{% if account.connected %}#4ade80;box-shadow:0 0 6px #4ade80{% else %}var(--muted){% endif %};"></div>
+              <div>
+                <div style="font-weight:600;font-size:0.875rem;">{{ account.nickname }}</div>
+                <div style="font-size:0.7rem;color:var(--muted);font-family:var(--mono);">Instagram · {% if account.connected %}Connected{% else %}Not connected{% endif %}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <form action="/settings/accounts/{{ account.id }}/delete" method="post" style="display:inline" onsubmit="return confirm('Remove {{ account.nickname }}?')">
+                <button type="submit" class="btn btn-disconnect" style="font-size:0.7rem;padding:7px 12px;">Remove</button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div style="color:var(--muted);font-size:0.8rem;margin-bottom:16px;">No Instagram accounts added yet.</div>
+        {% endif %}
+
+        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:8px;">
+          <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.08em;margin-bottom:12px;">ADD INSTAGRAM ACCOUNT</div>
+          <form action="/settings/accounts/instagram/add" method="post">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div class="field" style="grid-column:1/-1;">
+                <label>Nickname (e.g. "Chef IG")</label>
+                <input type="text" name="nickname" placeholder="Chef IG" required>
+              </div>
+              <div class="field">
+                <label>App ID</label>
+                <input type="text" name="app_id" placeholder="Your Meta App ID">
+              </div>
+              <div class="field">
+                <label>App Secret</label>
+                <input type="password" name="app_secret" placeholder="Your Meta App Secret">
+              </div>
+              <div class="field" style="grid-column:1/-1;">
+                <label>Page Access Token (long-lived)</label>
+                <input type="password" name="page_access_token" placeholder="EAAxxxxxxx...">
+              </div>
+              <div class="field" style="grid-column:1/-1;">
+                <label>Instagram Business Account ID</label>
+                <input type="text" name="instagram_account_id" placeholder="17841400000000000">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top:4px;">+ Add Account</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FACEBOOK ── -->
+  <div class="platform-section">
+    <div class="platform-card">
+      <div class="platform-header">
+        <div class="platform-title">
+          <div class="status-dot" style="background: {% if facebook_accounts|selectattr('connected')|list|length > 0 %}#4ade80; box-shadow: 0 0 8px #4ade80{% else %}var(--muted){% endif %};"></div>
+          <h2>ƒ Facebook</h2>
+        </div>
+        <span class="status-label" style="color: {% if facebook_accounts|selectattr('connected')|list|length > 0 %}#4ade80{% else %}var(--muted){% endif %}">
+          {% set fb_connected_count = facebook_accounts|selectattr('connected')|list|length %}
+          {% if fb_connected_count > 0 %}{{ fb_connected_count }} Account{{ 's' if fb_connected_count != 1 else '' }} Connected{% else %}Not Connected{% endif %}
+        </span>
+      </div>
+      <div class="platform-body">
+        <div class="guide">
+          <strong>Setup Guide:</strong>
+          <ol>
+            <li>Same Meta app as Instagram — add <strong>Pages API</strong> product</li>
+            <li>Get your <strong>Page ID</strong> from your Facebook Page settings</li>
+            <li>Generate a <strong>long-lived Page Access Token</strong></li>
+            <li>Make sure your app has <code>pages_manage_posts</code> permission</li>
+          </ol>
+        </div>
+
+        {% if facebook_accounts %}
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+          {% for account in facebook_accounts %}
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:{% if account.connected %}#4ade80;box-shadow:0 0 6px #4ade80{% else %}var(--muted){% endif %};"></div>
+              <div>
+                <div style="font-weight:600;font-size:0.875rem;">{{ account.nickname }}</div>
+                <div style="font-size:0.7rem;color:var(--muted);font-family:var(--mono);">Facebook · {% if account.connected %}Connected{% else %}Not connected{% endif %}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <form action="/settings/accounts/{{ account.id }}/delete" method="post" style="display:inline" onsubmit="return confirm('Remove {{ account.nickname }}?')">
+                <button type="submit" class="btn btn-disconnect" style="font-size:0.7rem;padding:7px 12px;">Remove</button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div style="color:var(--muted);font-size:0.8rem;margin-bottom:16px;">No Facebook accounts added yet.</div>
+        {% endif %}
+
+        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:8px;">
+          <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.08em;margin-bottom:12px;">ADD FACEBOOK ACCOUNT</div>
+          <form action="/settings/accounts/facebook/add" method="post">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div class="field" style="grid-column:1/-1;">
+                <label>Nickname (e.g. "Business Page")</label>
+                <input type="text" name="nickname" placeholder="Business Page" required>
+              </div>
+              <div class="field">
+                <label>App ID</label>
+                <input type="text" name="app_id" placeholder="Your Meta App ID">
+              </div>
+              <div class="field">
+                <label>App Secret</label>
+                <input type="password" name="app_secret" placeholder="Your Meta App Secret">
+              </div>
+              <div class="field" style="grid-column:1/-1;">
+                <label>Page Access Token (long-lived)</label>
+                <input type="password" name="page_access_token" placeholder="EAAxxxxxxx...">
+              </div>
+              <div class="field" style="grid-column:1/-1;">
+                <label>Facebook Page ID</label>
+                <input type="text" name="page_id" placeholder="123456789012345">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top:4px;">+ Add Account</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+db/
+queue/
+posted/
+failed/
+thumbnails/
+previews/
+server.log
+*.db
+*.sqlite
+.env
