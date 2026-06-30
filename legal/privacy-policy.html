@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Build & Chill Auto Poster Privacy Policy</title>
+<link rel="icon" type="image/png" href="/static/icon.png">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f0f; color: #d0d0d0; max-width: 800px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; }
@@ -19,27 +20,47 @@
 </head>
 <body>
 
+<div style="display:flex; align-items:center; gap:14px; margin-bottom:32px;">
+  <img src="/static/icon.png" alt="Build & Chill Auto Poster" style="width:56px; height:56px; border-radius:12px; flex-shrink:0;">
+  <span style="font-size:1.1rem; color:#fff; font-weight:600;">Build &amp; Chill Auto Poster</span>
+</div>
+
 <a href="/" class="back">← Back to Home</a>
 
 <h1>Build & Chill Auto Poster Privacy Policy</h1>
 <p class="meta">Last updated: May 2026</p>
 
 <h2>1. Data We Collect</h2>
-<p>Build & Chill Auto Poster is a locally-run application. All data is stored on your own device. We do not collect, store, or transmit any personal data to external servers.</p>
+<p>Build & Chill Auto Poster is a self-hosted scheduling tool. When you use the application, the following data is stored locally on the device running the software:</p>
+<ul>
+  <li>Your connected social media account nicknames and OAuth access tokens</li>
+  <li>Post content you upload (videos, images, captions)</li>
+  <li>Post schedule and publishing history</li>
+</ul>
+<p>We do not operate external servers that collect or store your data. All data remains on the device where the application is installed.</p>
 
-<h2>2. API Credentials</h2>
-<p>API keys and access tokens entered into Build & Chill Auto Poster are stored locally in a SQLite database on your Mac. They are used solely to authenticate with the respective social media platform APIs on your behalf and are never shared with any third party.</p>
+<h2>2. API Credentials & OAuth Tokens</h2>
+<p>OAuth access tokens obtained through connecting your social media accounts are stored in an encrypted SQLite database on the host device. These tokens are used solely to publish content to the respective platforms on your behalf and are never transmitted to any third party.</p>
 
-<h2>3. Content</h2>
-<p>Content you upload (videos, images) is stored locally in the application's queue folder on your device. It is only transmitted to the social platform(s) you select at the time of posting.</p>
+<h2>3. Content You Upload</h2>
+<p>Videos and images you upload are stored in a local queue folder on the host device. Content is transmitted only to the social platform(s) you select at the time of scheduling. We do not store copies of your content on any external server.</p>
 
-<h2>4. TikTok API</h2>
-<p>When you authenticate with TikTok through Build & Chill Auto Poster, we receive an access token which is stored locally on your device. We use this token only to upload content on your behalf via the official TikTok Content Posting API. We do not access, store, or share your TikTok profile data beyond what is required for content publishing.</p>
+<h2>4. TikTok Data Usage</h2>
+<p>When you connect your TikTok account through Build & Chill Auto Poster, we use the TikTok Content Posting API to publish videos and photo carousels on your behalf. We request only the minimum permissions required for content publishing:</p>
+<ul>
+  <li><strong>video.upload / video.publish</strong> — to upload and post video content</li>
+  <li><strong>photo.publish</strong> — to post photo carousels</li>
+  <li><strong>user.info.stats</strong> — to display basic account information within the app</li>
+</ul>
+<p>We do not access your TikTok inbox, followers list, or any data beyond what is explicitly listed above. Your TikTok access token is stored locally and is never shared with any third party.</p>
 
 <h2>5. No Third-Party Sharing</h2>
-<p>Build & Chill Auto Poster does not sell, rent, or share any of your data with third parties. We do not use analytics, tracking pixels, or any external data collection services.</p>
+<p>Build & Chill Auto Poster does not sell, rent, or share any user data with third parties. The application does not use analytics services, tracking pixels, or any external data collection.</p>
 
-<h2>6. Contact</h2>
+<h2>6. Data Deletion</h2>
+<p>You can remove a connected account at any time from the Settings page. This deletes the stored access token for that account. To remove all data, uninstall the application and delete the <code>db/</code> folder from the install directory.</p>
+
+<h2>7. Contact</h2>
 <p>If you have any questions about this Privacy Policy, you can reach us at <a href="mailto:dan@buildchill.com">dan@buildchill.com</a>.</p>
 
 </body>
